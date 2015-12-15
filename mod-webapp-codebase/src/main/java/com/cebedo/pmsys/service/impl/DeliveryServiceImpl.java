@@ -382,7 +382,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 		Date bStart = bObj.getDatetime();
 
 		// To sort in ascending,
-		return aStart.before(bStart) ? -1 : aStart.after(bStart) ? 1 : 0;
+		return aStart.compareTo(bStart);
 	    }
 	});
 	return deliveries;
@@ -434,7 +434,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 		// To sort in ascending,
 		// remove Not's.
-		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+		return -1 * aStart.compareTo(bStart);
 	    }
 	});
 	return deliveries;
@@ -489,7 +489,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 		// To sort in ascending,
 		// remove Not's.
-		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+		return -1 * aStart.compareTo(bStart);
 	    }
 	});
 	return deliveries;

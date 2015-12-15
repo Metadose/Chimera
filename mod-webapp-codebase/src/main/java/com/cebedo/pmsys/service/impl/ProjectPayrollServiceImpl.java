@@ -663,10 +663,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 	    public int compare(ProjectPayroll aObj, ProjectPayroll bObj) {
 		Date aStart = aObj.getEndDate();
 		Date bStart = bObj.getEndDate();
-
-		// To sort in ascending,
-		// remove Not's.
-		return aStart.before(bStart) ? -1 : aStart.after(bStart) ? 1 : 0;
+		return aStart.compareTo(bStart);
 	    }
 	});
 
@@ -724,7 +721,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 		// To sort in ascending,
 		// remove Not's.
-		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+		return -1 * aStart.compareTo(bStart);
 	    }
 	});
 
@@ -782,7 +779,7 @@ public class ProjectPayrollServiceImpl implements ProjectPayrollService {
 
 		// To sort in ascending,
 		// remove Not's.
-		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+		return -1 * aStart.compareTo(bStart);
 	    }
 	});
 

@@ -291,7 +291,7 @@ public class MaterialServiceImpl implements MaterialService {
 		Date bStart = bObj.getDelivery().getDatetime();
 
 		// To sort in descending.
-		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+		return -1 * aStart.compareTo(bStart);
 	    }
 	});
 	return materials;
