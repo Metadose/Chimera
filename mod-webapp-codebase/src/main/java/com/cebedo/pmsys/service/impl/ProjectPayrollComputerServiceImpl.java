@@ -288,6 +288,13 @@ public class ProjectPayrollComputerServiceImpl implements ProjectPayrollComputer
 	Collections.sort(staffList, new Comparator<Staff>() {
 	    @Override
 	    public int compare(Staff aObj, Staff bObj) {
+		if (aObj == null && bObj == null) {
+		    return 0;
+		} else if (aObj == null) {
+		    return 1;
+		} else if (bObj == null) {
+		    return -1;
+		}
 		String aName = aObj.getFormalName();
 		String bName = bObj.getFormalName();
 

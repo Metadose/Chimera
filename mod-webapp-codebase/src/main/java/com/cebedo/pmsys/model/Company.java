@@ -43,7 +43,10 @@ public class Company implements IObjectModel {
     private Set<Task> tasks;
     private Set<AuditLog> auditLogs;
     private boolean betaTester;
+
+    // For cloning.
     private boolean randomizeNames;
+    private String clonePassword;
 
     // HTMLTheme.
     private String themeID;
@@ -223,6 +226,15 @@ public class Company implements IObjectModel {
 
     public void setRandomizeNames(boolean randomizeNames) {
 	this.randomizeNames = randomizeNames;
+    }
+
+    @Transient
+    public String getClonePassword() {
+	return clonePassword;
+    }
+
+    public void setClonePassword(String clonePassword) {
+	this.clonePassword = clonePassword;
     }
 
 }

@@ -38,6 +38,10 @@ public class RegistryURL {
 
     public static final String DELETE_ESTIMATE_COST = "/delete/cost/{cost}-end";
 
+    public static final String CLEAR_LOGS = "/clear-logs/{project_id}";
+
+    public static final String CLEAR_LOGS_ALL = "/clear-logs/all";
+
     public static final String DELETE_EXPENSE = "/delete/expense/{expense}-end";
 
     public static final String DELETE_EQUIPMENT_EXPENSE = "/delete/equipmentexpense/{equipmentexpense}-end";
@@ -145,6 +149,8 @@ public class RegistryURL {
     public static final String UNASSIGN_ALL_FIELD = "unassign/field/all";
 
     public static final String UPDATE_FIELD = "field/update";
+
+    public static final String COMPUTE_PAYROLL_ALL = "compute/payroll/all";
 
     public static final String UPDATE_COMPANY_AUX = "auxcompany/update";
 

@@ -389,6 +389,24 @@ public class CompanyServiceImpl implements CompanyService {
 	}
     }
 
+    @Override
+    @Transactional
+    public String clearLogs() {
+	this.messageHelper.auditableID(AuditAction.ACTION_DELETE_ALL, Company.OBJECT_NAME, 0,
+		AuditLog.OBJECT_NAME);
+	this.companyDAO.executeDelete(new AuditLog());
+	return AlertBoxFactory.SUCCESS.generateDeleteAll("log");
+    }
+
+    @Override
+    @Transactional
+    public String clearLogs(int id) {
+	this.messageHelper.auditableID(AuditAction.ACTION_DELETE_ALL, Company.OBJECT_NAME, id,
+		AuditLog.OBJECT_NAME);
+	this.companyDAO.executeDelete(new AuditLog(), id);
+	return AlertBoxFactory.SUCCESS.generateDeleteAll("log");
+    }
+
     /**
      * Deletes a company.
      */
@@ -506,8 +524,10 @@ public class CompanyServiceImpl implements CompanyService {
 	long companyId = companyTarget.getId();
 	String cloneName = companyTarget.getName();
 
+	// Set cloning configuration.
 	Company company = this.companyDAO.getByIDWithLazyCollections(companyId);
 	company.setRandomizeNames(companyTarget.isRandomizeNames());
+	company.setClonePassword(companyTarget.getClonePassword());
 
 	if (!this.authHelper.isSuperAdmin()) {
 	    this.messageHelper.unauthorizedID(Company.OBJECT_NAME, company.getId());
@@ -1071,17 +1091,29 @@ public class CompanyServiceImpl implements CompanyService {
 	for (SystemUser originalUser : users) {
 	    SystemUser cloneUser = originalUser.clone();
 
-	    // Set the staff.
+	    // If the staff was set in the original object,
+	    // set it here too.
 	    Staff userStaff = originalUser.getStaff();
 	    if (userStaff != null) {
+
+		// Set the staff.
 		long oldId = userStaff.getId();
 		Staff stf = oldIdToNewStaff.get(oldId);
 		cloneUser.setStaff(stf);
+
+		// Update the user name.
+		String newUserName = String.format("%s_%s", stf.getFirstName(), stf.getLastName())
+			.toLowerCase();
+		cloneUser.setUsername(newUserName);
 	    }
+
+	    // Update the password.
+	    String encPassword = this.authHelper.encodePassword(company.getClonePassword(), cloneUser);
+	    cloneUser.setPassword(encPassword);
+
 	    cloneUser.setAuditLogs(null);
 	    cloneUser.setCompany(cloneCompany);
 	    cloneUser.setId(0);
-	    cloneUser.setUsername(String.format("%s_%s", cloneCompany.getId(), cloneUser.getUsername()));
 	    this.systemUserDAO.create(cloneUser);
 
 	    // Add to map.
@@ -1107,4 +1139,5 @@ public class CompanyServiceImpl implements CompanyService {
 	cloneAux.setUser(cloneUser);
 	this.userAuxValueRepo.set(cloneAux);
     }
+
 }

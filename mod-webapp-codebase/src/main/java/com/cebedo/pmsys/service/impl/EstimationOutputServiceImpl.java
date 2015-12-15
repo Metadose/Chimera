@@ -106,7 +106,7 @@ public class EstimationOutputServiceImpl implements EstimationOutputService {
 
 		// To sort in ascending,
 		// remove Not's.
-		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+		return -1 * aStart.compareTo(bStart);
 	    }
 	});
 	return estimateList;

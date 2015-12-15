@@ -7,7 +7,7 @@
 <html class="bg-black">
 <head>
 	<meta charset="UTF-8">
-	<title>Company Name | Log In</title>
+	<title>Log In</title>
 	<meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
 <%-- 	<link href="${contextPath}/resources/lib/bootstrap.min.css" rel="stylesheet" type="text/css" /> --%>
 	<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/lib/bootstrap.min.css" rel="stylesheet" type="text/css" />

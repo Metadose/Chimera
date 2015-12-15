@@ -385,7 +385,7 @@ public class ProjectController {
 	// Attach attributes.
 	String createProjectDisplay = reachedLimit ? String
 		.format("Used %s projects out of %s (You have reached the Limit)", currentSize, limit)
-		: String.format("Used %s projects out of %s", currentSize, limit);
+		: String.format("Used %s project(s) out of %s", currentSize, limit);
 	model.addAttribute("canCreateProject", canCreateProject);
 	model.addAttribute("createProjectDisplay", superAdmin ? "" : createProjectDisplay);
 	model.addAttribute(ATTR_LIST, projects);
@@ -507,6 +507,27 @@ public class ProjectController {
 	// Attach response.
 	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 
+	return redirectEditPageProject(project.getId(), status);
+    }
+
+    /**
+     * Compute all payrolls.
+     * 
+     * @param session
+     * @param redirectAttrs
+     * @param status
+     * @param result
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.COMPUTE_PAYROLL_ALL, method = RequestMethod.GET)
+    public String computePayrollAll(HttpSession session, RedirectAttributes redirectAttrs,
+	    SessionStatus status) {
+
+	Project project = getProject(session);
+	String response = this.projectPayrollService.computeAll(project);
+
+	// Attach response.
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
 	return redirectEditPageProject(project.getId(), status);
     }
 
@@ -1820,16 +1841,32 @@ public class ProjectController {
 	// If null,
 	// get current month.
 	if (min == null) {
-	    Calendar cal = Calendar.getInstance();
-	    int year = cal.get(Calendar.YEAR);
-	    int month = cal.get(Calendar.MONTH); // Zero-based.
-	    min = new GregorianCalendar(year, month, 1).getTime();
 
-	    // Based on minimum, get max days in current month.
-	    // Given max days, create max object.
-	    cal.setTime(min);
-	    int maxDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-	    max = new GregorianCalendar(year, month, maxDays).getTime();
+	    Project proj = getProject(session);
+
+	    // If project is not set,
+	    // set min to the current month,
+	    // and max to end of current month.
+	    if (proj == null) {
+
+		Calendar cal = Calendar.getInstance();
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH); // Zero-based.
+		min = new GregorianCalendar(year, month, 1).getTime();
+
+		// Based on minimum, get max days in current month.
+		// Given max days, create max object.
+		cal.setTime(min);
+		int maxDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+		max = new GregorianCalendar(year, month, maxDays).getTime();
+	    }
+	    // Else, set min to start of project,
+	    // and max to end of project.
+	    else {
+		min = proj.getDateStart();
+		max = proj.getActualCompletionDate() == null ? proj.getTargetCompletionDate()
+			: proj.getActualCompletionDate();
+	    }
 	}
 
 	Map<String, Date> datePair = new HashMap<String, Date>();
@@ -2703,6 +2740,11 @@ public class ProjectController {
 	executor.execute(runOtherExpenses);
 	executor.execute(runModelerEquipment);
 	executor.execute(runModelerPOW);
+
+	// Materials are set synchronously because sometimes
+	// they are not set inside the thread.
+	List<Material> materialList = this.materialService.listDesc(proj, true);
+	model.addAttribute(ProjectController.ATTR_MATERIAL_LIST, materialList);
 
 	// Wait for threads to shutdown.
 	awaitTermination(executor);

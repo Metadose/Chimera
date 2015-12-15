@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.cebedo.pmsys.base.IObjectExpense;
 import com.cebedo.pmsys.constants.RegistryCache;
@@ -15,6 +16,9 @@ import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.pojo.FormPayrollIncludeStaff;
 
 public interface ProjectPayrollService {
+
+    @PreAuthorize("hasRole('ADMIN_SUPER')")
+    public String computeAll(Project proj);
 
     public List<IObjectExpense> listDescExpense(Project proj);
 

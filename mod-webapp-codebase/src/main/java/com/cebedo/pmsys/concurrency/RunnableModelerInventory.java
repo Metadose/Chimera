@@ -12,9 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
 import com.cebedo.pmsys.base.IRunnableModeler;
-import com.cebedo.pmsys.controller.ProjectController;
 import com.cebedo.pmsys.domain.Delivery;
-import com.cebedo.pmsys.domain.Material;
 import com.cebedo.pmsys.domain.PullOut;
 import com.cebedo.pmsys.model.Project;
 import com.cebedo.pmsys.pojo.HighchartsDataPoint;
@@ -102,8 +100,11 @@ public class RunnableModelerInventory implements IRunnableModeler {
 
 	// Get all materials.
 	// Add to model.
-	List<Material> materialList = this.materialService.listDesc(proj, true);
-	model.addAttribute(ProjectController.ATTR_MATERIAL_LIST, materialList);
+	// Materials are set synchronously in the project controller.
+	// List<Material> materialList = this.materialService.listDesc(proj,
+	// true);
+	// model.addAttribute(ProjectController.ATTR_MATERIAL_LIST,
+	// materialList);
 
 	// Get all pull-outs.
 	// Add to model.

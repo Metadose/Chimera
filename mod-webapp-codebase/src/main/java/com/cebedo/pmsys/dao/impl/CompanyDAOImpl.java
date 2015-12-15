@@ -12,6 +12,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.annotations.LazyCollection;
 import org.springframework.stereotype.Repository;
 
+import com.cebedo.pmsys.base.IObjectModel;
 import com.cebedo.pmsys.dao.CompanyDAO;
 import com.cebedo.pmsys.helper.AuthHelper;
 import com.cebedo.pmsys.helper.DAOHelper;
@@ -164,6 +165,17 @@ public class CompanyDAOImpl implements CompanyDAO {
     /**
      * Execute a delete query.
      * 
+     * @param model
+     * @param companyId
+     */
+    public void executeDelete(IObjectModel model, long companyId) {
+	Session session = this.sessionFactory.getCurrentSession();
+	executeDelete(session, model.getTableName(), companyId);
+    }
+
+    /**
+     * Execute a delete query.
+     * 
      * @param session
      * @param tableName
      * @param primaryKey
@@ -174,6 +186,26 @@ public class CompanyDAOImpl implements CompanyDAO {
 		Company.COLUMN_PRIMARY_KEY, Company.COLUMN_PRIMARY_KEY);
 	SQLQuery query = session.createSQLQuery(queryStr);
 	query.setParameter(Company.COLUMN_PRIMARY_KEY, companyId);
+	query.executeUpdate();
+    }
+
+    /**
+     * Delete all entries of a model.
+     */
+    public void executeDelete(IObjectModel model) {
+	Session session = this.sessionFactory.getCurrentSession();
+	executeDelete(session, model.getTableName());
+    }
+
+    /**
+     * Delete all entries given a table.
+     * 
+     * @param session
+     * @param tableName
+     */
+    private void executeDelete(Session session, String tableName) {
+	String queryStr = String.format("DELETE FROM %s", tableName);
+	SQLQuery query = session.createSQLQuery(queryStr);
 	query.executeUpdate();
     }
 

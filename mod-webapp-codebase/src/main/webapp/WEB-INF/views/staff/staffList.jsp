@@ -153,7 +153,9 @@
 	</div>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$("#example-1").dataTable();
+			$("#example-1").DataTable({
+		        "order": [[ 1, "asc" ]]
+		    });
 		});
 	</script>
 </body>

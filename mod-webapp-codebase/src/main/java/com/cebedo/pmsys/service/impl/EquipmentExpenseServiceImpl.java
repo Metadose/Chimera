@@ -199,7 +199,7 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
 	    public int compare(EquipmentExpense aObj, EquipmentExpense bObj) {
 		Date aStart = aObj.getDate();
 		Date bStart = bObj.getDate();
-		return aStart.before(bStart) ? -1 : aStart.after(bStart) ? 1 : 0;
+		return aStart.compareTo(bStart);
 	    }
 	});
 	return expenses;
@@ -317,7 +317,7 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
 	    public int compare(EquipmentExpense aObj, EquipmentExpense bObj) {
 		Date aStart = aObj.getDate();
 		Date bStart = bObj.getDate();
-		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+		return -1 * aStart.compareTo(bStart);
 	    }
 	});
 	return expenses;
@@ -367,7 +367,7 @@ public class EquipmentExpenseServiceImpl implements EquipmentExpenseService {
 	    public int compare(IObjectExpense aObj, IObjectExpense bObj) {
 		Date aStart = EquipmentExpense.class.cast(aObj).getDate();
 		Date bStart = EquipmentExpense.class.cast(bObj).getDate();
-		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+		return -1 * aStart.compareTo(bStart);
 	    }
 	});
 	return expenses;

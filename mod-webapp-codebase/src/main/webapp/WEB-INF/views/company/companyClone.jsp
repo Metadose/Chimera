@@ -66,6 +66,10 @@
 				                                            	path="name"/>
 				                                            <p class="help-block">Enter the name of the clone</p>
 				                                            
+				                                            <label>Users Password</label>
+				                                            <form:password class="form-control" path="clonePassword"/>
+				                                            <p class="help-block">Type the password for the user accounts</p>
+				                                            
 				                                            <label>Randomize Staff Names</label>
 				                                            <form:checkbox class="form-control" path="randomizeNames"/>
 				                                            <p class="help-block">Check if you want to randomize staff names</p>

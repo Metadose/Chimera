@@ -712,7 +712,7 @@
 															</div>
 				                                        	
 							                                <div class="box-body">
-							                                    <table class="table table-bordered table-striped is-data-table">	
+							                                    <table id="estimated-direct-costs" class="table table-bordered table-striped">	
 							                                    	<thead>
 							                                            <tr>
 							                                            	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_UPDATE', 'ESTIMATE_DELETE')">
@@ -771,7 +771,7 @@
 															<h3 class="box-title">Indirect Costs</h3>
 															</div>
 							                                <div class="box-body">
-							                                    <table class="table table-bordered table-striped is-data-table">	
+							                                    <table id="estimated-indirect-costs" class="table table-bordered table-striped">	
 							                                    	<thead>
 							                                            <tr>
 							                                            	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'ESTIMATE_UPDATE', 'ESTIMATE_DELETE')">
@@ -839,7 +839,7 @@
 			<!-- 			              									<h3 class="box-title">Staff Members</h3> -->
 			<!-- 			              								</div> -->
 							                                <div class="box-body">
-							                                    <table id="estimate-output-table" class="table table-bordered table-striped is-data-table">	
+							                                    <table id="estimate-output-table" class="table table-bordered table-striped">	
 							                                    	<thead>
 							                                            <tr>
 							                                            	<th>&nbsp;</th>
@@ -985,7 +985,7 @@
 													</u></b></h3>
 													</div>
 
-			                                		<table class="table table-bordered table-striped is-data-table">
+			                                		<table id="equipment-table" class="table table-bordered table-striped">
 				                                    	<thead>
 				                                            <tr>
 				                                            	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'EQUIPMENT_UPDATE', 'EQUIPMENT_DELETE')">
@@ -1153,7 +1153,7 @@
 													</u></b></h3>
 													</div>
 
-			                                		<table class="table table-bordered table-striped is-data-table">
+			                                		<table id="other-expenses-table" class="table table-bordered table-striped">
 				                                    	<thead>
 				                                            <tr>
 				                                            	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'OTHER_EXPENSES_UPDATE', 'OTHER_EXPENSES_DELETE')">
@@ -1803,6 +1803,13 @@
 										  	  	<c:url var="urlCreateTeam" value="/project/edit/payroll/0-end"/>
 		                                  		<a href="${urlCreateTeam}">
 		                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Payroll</button>
+		                                  		</a>
+		                                  		</sec:authorize>
+
+												<sec:authorize access="hasRole('ADMIN_SUPER')">
+										  	  	<c:url var="urlCreateTeam" value="/project/compute/payroll/all"/>
+		                                  		<a href="${urlCreateTeam}">
+		                                    		<button class="btn btn-cebedo-create btn-flat btn-sm">Compute All</button>
 		                                  		</a>
 		                                  		</sec:authorize>
 		                                  		
@@ -3253,21 +3260,42 @@
 			$('.date-picker').datepicker({
 			    format: 'yyyy/mm/dd'
 			})
-			$("#chb-cost-quantity-table").dataTable();
-			$("#chb-quantity-table").dataTable();
-			$("#form-estimate-cost").dataTable();
-			$("#material-table").dataTable();
-			$("#pull-out-table").dataTable();
-			$("#delivery-table").dataTable();
-			$("#payroll-table").dataTable();
-			$("#managers-table").dataTable();
-			$("#assigned-staff-table").dataTable();
-			$("#tasks-table").dataTable();
+			
+			$("#estimate-output-table").dataTable();
 			var staffAssignTable = $("#staff-assign-table").dataTable();
 			if(staffAssignTable.size() > 0){
 				staffAssignTable.fnLengthChange(-1);
 			}
-
+			$("#other-expenses-table").DataTable({
+				"order": [[ 1, "desc" ]]
+		    });
+			$("#equipment-table").DataTable({
+				"order": [[ 1, "desc" ]]
+		    });
+			$("#pull-out-table").DataTable({
+				"order": [[ 1, "desc" ]]
+		    });
+			$("#material-table").DataTable({
+				"order": [[ 1, "asc" ]]
+		    });
+			$("#delivery-table").DataTable({
+				"order": [[ 1, "desc" ]]
+		    });
+			$("#payroll-table").DataTable({
+				"order": [[ 1, "desc" ]]
+		    });
+			$("#assigned-staff-table").DataTable({
+				"order": [[ 1, "asc" ]]
+		    });
+			$("#tasks-table").DataTable({
+		        "order": [[ 2, "desc" ]]
+		    });
+			$("#estimated-direct-costs").DataTable({
+		        "order": [[ 1, "asc" ]]
+		    });
+			$("#estimated-indirect-costs").DataTable({
+		        "order": [[ 1, "asc" ]]
+		    });
 			$(".is-data-table").dataTable();
 	    });	    
 		

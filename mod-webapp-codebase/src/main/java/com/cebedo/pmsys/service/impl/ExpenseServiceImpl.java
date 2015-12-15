@@ -166,7 +166,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 	    public int compare(Expense aObj, Expense bObj) {
 		Date aStart = aObj.getDate();
 		Date bStart = bObj.getDate();
-		return aStart.before(bStart) ? -1 : aStart.after(bStart) ? 1 : 0;
+		return aStart.compareTo(bStart);
 	    }
 	});
 
@@ -320,7 +320,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 	    public int compare(Expense aObj, Expense bObj) {
 		Date aStart = aObj.getDate();
 		Date bStart = bObj.getDate();
-		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+		return -1 * aStart.compareTo(bStart);
 	    }
 	});
 
@@ -371,7 +371,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 	    public int compare(IObjectExpense aObj, IObjectExpense bObj) {
 		Date aStart = Expense.class.cast(aObj).getDate();
 		Date bStart = Expense.class.cast(bObj).getDate();
-		return !(aStart.before(bStart)) ? -1 : !(aStart.after(bStart)) ? 1 : 0;
+		return -1 * aStart.compareTo(bStart);
 	    }
 	});
 

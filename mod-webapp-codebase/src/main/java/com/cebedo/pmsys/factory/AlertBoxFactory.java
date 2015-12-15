@@ -107,6 +107,12 @@ public class AlertBoxFactory {
 	    + " <b>" + DELIMITER_OBJECT_NAME + "</b>.";
 
     /**
+     * All.
+     */
+    private static String TEMPLATE_SUCCESS_GENERIC_ALL = "Successfully <b>%s</b> all <b>%s</b> entries.";
+
+    private static String TEMPLATE_FAILED_GENERIC_ALL = "Failed to <b>%s</b> all %s entries.";
+    /**
      * Compute.
      */
     private static String TEMPLATE_SUCCESS_COMPUTE = "Successfully <b>computed</b> the "
@@ -237,6 +243,17 @@ public class AlertBoxFactory {
 	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
 	    result = TEMPLATE_SUCCESS_DELETE_PROFILE_PIC.replace(DELIMITER_OBJECT_TYPE, object)
 		    .replace(DELIMITER_OBJECT_NAME, objName);
+	}
+	this.message = result;
+	return generateHTML();
+    }
+
+    public String generateGenericAll(String actionPast, String objName) {
+	String result = "";
+	if (this.status.equals(ConstantsSystem.UI_STATUS_DANGER)) {
+	    result = String.format(TEMPLATE_FAILED_GENERIC_ALL, actionPast, objName);
+	} else if (this.status.equals(ConstantsSystem.UI_STATUS_SUCCESS)) {
+	    result = String.format(TEMPLATE_SUCCESS_GENERIC_ALL, actionPast, objName);
 	}
 	this.message = result;
 	return generateHTML();
