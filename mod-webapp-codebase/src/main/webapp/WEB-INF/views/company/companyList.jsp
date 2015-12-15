@@ -33,6 +33,20 @@
                                 	<a href="${urlCreateCompany}">
                                 		<button class="btn btn-cebedo-create btn-flat btn-sm">Create Company</button>
                                 	</a>
+                                	
+									<div class="btn-group">
+										<button type="button" 
+										class="btn btn-cebedo-delete btn-flat btn-sm dropdown-toggle" 
+										data-toggle="dropdown">Clear All Logs</button>
+									
+										<ul class="dropdown-menu"><li>
+										<c:url value="/company/clear-logs/all" var="urlClearAllLogsCompany"/>
+										<a href="${urlClearAllLogsCompany}" class="cebedo-dropdown-hover">
+										Confirm Clear
+										</a>
+										</li></ul>
+									</div>
+                                	
                                 	<br/><br/>
                                     <table id="example-1" class="table table-bordered table-striped">
                                         <thead>

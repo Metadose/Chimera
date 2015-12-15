@@ -391,6 +391,15 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     @Transactional
+    public String clearLogs() {
+	this.messageHelper.auditableID(AuditAction.ACTION_DELETE_ALL, Company.OBJECT_NAME, 0,
+		AuditLog.OBJECT_NAME);
+	this.companyDAO.executeDelete(new AuditLog());
+	return AlertBoxFactory.SUCCESS.generateDeleteAll("log");
+    }
+
+    @Override
+    @Transactional
     public String clearLogs(int id) {
 	this.messageHelper.auditableID(AuditAction.ACTION_DELETE_ALL, Company.OBJECT_NAME, id,
 		AuditLog.OBJECT_NAME);

@@ -40,6 +40,8 @@ public class RegistryURL {
 
     public static final String CLEAR_LOGS = "/clear-logs/{project_id}";
 
+    public static final String CLEAR_LOGS_ALL = "/clear-logs/all";
+
     public static final String DELETE_EXPENSE = "/delete/expense/{expense}-end";
 
     public static final String DELETE_EQUIPMENT_EXPENSE = "/delete/equipmentexpense/{equipmentexpense}-end";

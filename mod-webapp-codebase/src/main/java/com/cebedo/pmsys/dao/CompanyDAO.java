@@ -8,6 +8,8 @@ import com.cebedo.pmsys.model.Company;
 
 public interface CompanyDAO {
 
+    public void executeDelete(IObjectModel model);
+
     public void executeDelete(IObjectModel model, long companyId);
 
     public void delete(Company company);

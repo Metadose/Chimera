@@ -194,6 +194,27 @@ public class CompanyController {
     }
 
     /**
+     * Clear all logs of all companies.
+     * 
+     * @param redirectAttrs
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = RegistryURL.CLEAR_LOGS_ALL, method = RequestMethod.GET)
+    public String clearAllLogs(RedirectAttributes redirectAttrs, SessionStatus status) {
+
+	// Do service.
+	// Get response.
+	String response = this.companyService.clearLogs();
+
+	// Attach response.
+	// Alert result.
+	redirectAttrs.addFlashAttribute(ConstantsSystem.UI_PARAM_ALERT, response);
+
+	return listPage(status);
+    }
+
+    /**
      * Return to the list page.
      * 
      * @param status

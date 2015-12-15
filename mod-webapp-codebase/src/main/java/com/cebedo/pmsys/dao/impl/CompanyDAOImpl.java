@@ -190,6 +190,26 @@ public class CompanyDAOImpl implements CompanyDAO {
     }
 
     /**
+     * Delete all entries of a model.
+     */
+    public void executeDelete(IObjectModel model) {
+	Session session = this.sessionFactory.getCurrentSession();
+	executeDelete(session, model.getTableName());
+    }
+
+    /**
+     * Delete all entries given a table.
+     * 
+     * @param session
+     * @param tableName
+     */
+    private void executeDelete(Session session, String tableName) {
+	String queryStr = String.format("DELETE FROM %s", tableName);
+	SQLQuery query = session.createSQLQuery(queryStr);
+	query.executeUpdate();
+    }
+
+    /**
      * Delete project assignments.
      * 
      * @param session
