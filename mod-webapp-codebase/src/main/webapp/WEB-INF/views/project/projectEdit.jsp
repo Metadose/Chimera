@@ -720,9 +720,9 @@
 							                                            	</sec:authorize>
 							                                            	
 							                                                <th>Name</th>
-							                                                <th>Estimated</th>
-							                                                <th>Actual</th>
-							                                                <th>Difference</th>
+							                                                <th>Estimated (&#8369;)</th>
+							                                                <th>Actual (&#8369;)</th>
+							                                                <th>Difference (&#8369;)</th>
 							                                            </tr>
 					                                        		</thead>
 							                                        <tbody>
@@ -755,8 +755,8 @@
 																			</td>
 																			</sec:authorize>
 						                                                	<td>${directCost.name}</td>
-						                                                	<td class="cebedo-text-align-right">${directCost.getCostAsString()}</td>
-						                                                	<td class="cebedo-text-align-right">${directCost.getActualCostAsString()}</td>
+						                                                	<td class="cebedo-text-align-right">${directCost.cost}</td>
+						                                                	<td class="cebedo-text-align-right">${directCost.actualCost}</td>
 						                                                	<td class="cebedo-text-align-right">${directCost.getDiffEstimatedActualAsHTML()}</td>
 							                                            </tr>
 							                                            </c:forEach>
@@ -779,9 +779,9 @@
 							                                            	</sec:authorize>
 							                                            	
 							                                                <th>Name</th>
-							                                                <th>Estimated</th>
-							                                                <th>Actual</th>
-							                                                <th>Difference</th>
+							                                                <th>Estimated (&#8369;)</th>
+							                                                <th>Actual (&#8369;)</th>
+							                                                <th>Difference (&#8369;)</th>
 							                                            </tr>
 					                                        		</thead>
 							                                        <tbody>
@@ -812,8 +812,8 @@
 																			</td>
 																			</sec:authorize>
 						                                                	<td>${indirectCost.name}</td>
-						                                                	<td class="cebedo-text-align-right">${indirectCost.getCostAsString()}</td>
-						                                                	<td class="cebedo-text-align-right">${indirectCost.getActualCostAsString()}</td>
+						                                                	<td class="cebedo-text-align-right">${indirectCost.cost}</td>
+						                                                	<td class="cebedo-text-align-right">${indirectCost.actualCost}</td>
 						                                                	<td class="cebedo-text-align-right">${indirectCost.getDiffEstimatedActualAsHTML()}</td>
 							                                            </tr>
 							                                            </c:forEach>
@@ -994,7 +994,7 @@
 				                                                <th>Date</th>
 				                                                <th>Name</th>
 				                                                <th>Staff</th>
-				                                                <th>Cost</th>
+				                                                <th>Cost (&#8369;)</th>
 				                                            </tr>
 			                                    		</thead>
 				                                        <tbody>
@@ -1041,7 +1041,7 @@
 																	</td>
 																	</sec:authorize>
 				                                                	
-				                                                	<td style="text-align: right;">${expense.getCostAsString()}</td>
+				                                                	<td style="text-align: right;">${expense.cost}</td>
 					                                            </tr>
 				                                            </c:forEach>
 					                                    </tbody>
@@ -1163,7 +1163,7 @@
 				                                                <th>Date</th>
 				                                                <th>Name</th>
 				                                                <th>Staff</th>
-				                                                <th>Cost</th>
+				                                                <th>Cost (&#8369;)</th>
 				                                            </tr>
 			                                    		</thead>
 				                                        <tbody>
@@ -1208,7 +1208,7 @@
 								                                    </a>
 																	</td>
 																	</sec:authorize>
-				                                                	<td style="text-align: right;">${expense.getCostAsString()}</td>
+				                                                	<td style="text-align: right;">${expense.cost}</td>
 					                                            </tr>
 				                                            </c:forEach>
 					                                    </tbody>
@@ -1828,7 +1828,7 @@
 			                                                <th>End Date</th>
 			                                                <th>Creator</th>
 			                                                <th>Status</th>
-			                                                <th>Payroll Total</th>
+			                                                <th>Payroll Total (&#8369;)</th>
 			                                                <th>Last Computed</th>
 			                                            </tr>
 	                                        		</thead>
@@ -1876,7 +1876,7 @@
 			                                                <c:set value="${payrollStatus.css()}" var="css"></c:set>
 															<span class="label ${css}">${payrollStatus}</span>
 			                                                </td>
-			                                                <td>${payrollRow.payrollComputationResult.getOverallTotalOfStaffAsString()}</td>
+			                                                <td style="text-align: right">${payrollRow.payrollComputationResult.overallTotalOfStaff}</td>
 			                                                <fmt:formatDate pattern="yyyy/MM/dd hh:mm:ss a" value="${payrollRow.lastComputed}" var="lastComputed"/>
 			                                                <td>${lastComputed}</td>
 			                                            </tr>
@@ -1910,14 +1910,14 @@
 				                                            <tr>
 				                                            	<th>&nbsp;</th>
 				                                            	<th>Delivery</th>
-				                                            	<th>Material Category</th>
 				                                                <th>Specific Name</th>
 				                                                <th>Unit</th>
+				                                                <th>Status</th>
 				                                                <th>Available</th>
-				                                                <th>Used / Pulled-Out</th>
-				                                            	<th>Total Quantity</th>
-				                                                <th>Cost (Per Unit)</th>
-				                                                <th>Total Cost</th>
+				                                                <th>Pulled-Out</th>
+				                                            	<th>Quantity</th>
+				                                                <th>(&#8369;)/Unit</th>
+				                                                <th>Total (&#8369;)</th>
 				                                            </tr>
 		                                        		</thead>
 				                                        <tbody>
@@ -1961,7 +1961,6 @@
 																${row.delivery.name}
 							                                    </a>
 																</td>
-																<td>${row.materialCategory.getLabel()}</td>
 
 																<td>
 																	<c:url var="urlLink" value="/project/edit/material/${row.getKey()}-end"/>
@@ -1991,6 +1990,7 @@
 															      	(${row.getAvailableAsPercentage()})
 															    </c:if>
 																</td>
+																<td style="text-align: right">${row.available}</td>
 																
 																<td align="right">
 																	<fmt:formatNumber type="number" pattern="###,##0.0###" value="${row.used}" />
@@ -1999,8 +1999,8 @@
 																<td align="right">
 																	<fmt:formatNumber type="number" pattern="###,##0.0###" value="${row.quantity}" />
 																</td>
-																<td align="right">${row.getCostPerUnitMaterialAsString()}</td>
-																<td align="right">${row.getTotalCostPerUnitMaterialAsString()}</td>
+																<td align="right">${row.costPerUnitMaterial}</td>
+																<td align="right">${row.totalCostPerUnitMaterial}</td>
 				                                            </tr>
 			                                            	</c:forEach>
 					                                    </tbody>
@@ -2063,7 +2063,7 @@
 				                                                <th>Date and Time</th>
 				                                                <th>Delivery</th>
 				                                                <th>Description</th>
-				                                                <th>Materials Cost</th>
+				                                                <th>Materials Cost (&#8369;)</th>
 				                                            </tr>
 		                                        		</thead>
 				                                        <tbody>
@@ -2096,7 +2096,7 @@
 																<td>${deliveryDateTime}</td>
 																<td>${deliveryRow.name}</td>
 																<td>${deliveryRow.description}</td>
-																<td align="right">${deliveryRow.getGrandTotalOfMaterialsAsString()}</td>
+																<td align="right">${deliveryRow.grandTotalOfMaterials}</td>
 				                                            </tr>
 			                                            	</c:forEach>
 					                                    </tbody>
@@ -2122,7 +2122,6 @@
 				                                                <th>Date and Time</th>
 				                                            	<th>Staff</th>
 				                                                <th>Delivery</th>
-																<th>Material Category</th>
 																<th>Specific Name</th>
 				                                                <th>Unit</th>
 				                                                <th>Quantity</th>
@@ -2176,7 +2175,6 @@
 							                                    </a>
 																</td>
 																
-																<td>${row.material.materialCategory.getLabel()}</td>
 																
 																<td>
 																<c:url var="urlLink" value="/project/edit/material/${row.material.getKey()}-end"/>
@@ -2257,7 +2255,7 @@
 						                                            	<th>&nbsp;</th>
 						                                                <th>Full Name</th>
 						                                                <th>Company Position</th>
-						                                                <th>Salary (Daily)</th>
+						                                                <th>Salary (&#8369; Daily)</th>
 						                                                <th>E-Mail</th>
 						                                                <th>Contact Number</th>
 						                                            </tr>
@@ -2291,7 +2289,7 @@
 																			</td>
 						                                                	<td>${assignedStaffMember.getFullName()} (${assignedStaffMember.getUsername()})</td>
 						                                                	<td>${assignedStaffMember.companyPosition}</td>
-						                                                	<td style="text-align: right;">${assignedStaffMember.getWageAsString()}</td>
+						                                                	<td style="text-align: right;">${assignedStaffMember.wage}</td>
 						                                                	<td>${assignedStaffMember.email}</td>
 						                                                	<td>${assignedStaffMember.getContactNumberAsString()}</td>
 							                                            </tr>
@@ -2366,7 +2364,7 @@
 				                                    			
 				                                                <th>Full Name</th>
 				                                                <th>Company Position</th>
-				                                                <th>Salary (Daily)</th>
+				                                                <th>Salary (&#8369; Daily)</th>
 				                                                <th>E-Mail</th>
 				                                                <th>Contact Number</th>
 				                                    			</tr>
@@ -2384,7 +2382,7 @@
 						                                    			
 						                                    			<td>${staff.getFullName()}</td>
 						                                    			<td>${staff.companyPosition}</td>
-					                                                	<td class="cebedo-text-align-right">${staff.getWageAsString()}</td>
+					                                                	<td class="cebedo-text-align-right">${staff.wage}</td>
 					                                                	<td>${staff.email}</td>
 					                                                	<td>${staff.getContactNumberAsString()}</td>
 						                                    			</tr>

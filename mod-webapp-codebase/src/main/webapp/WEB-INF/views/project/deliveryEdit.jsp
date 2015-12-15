@@ -232,11 +232,12 @@
 																<th>Material Category</th>
 																<th>Specific Name</th>
 																<th>Unit</th>
+																<th>Status</th>
 																<th>Available</th>
-																<th>Used / Pulled-Out</th>
-																<th>Total Quantity</th>
-																<th>Cost (Per Unit)</th>
-																<th>Total Cost</th>
+																<th>Pulled-Out</th>
+																<th>Quantity</th>
+																<th>(&#8369;)/Unit</th>
+																<th>Total (&#8369;)</th>
 				                                            </tr>
 		                                        		</thead>
 				                                        <tbody>
@@ -295,6 +296,8 @@
 															    </c:if>
 																</td>
 																
+																<td align="right">${row.available}</td>
+																
 																<td align="right">
 																	<fmt:formatNumber type="number" pattern="###,##0.0###" value="${row.used}" />
 																</td>
@@ -302,8 +305,8 @@
 																<td align="right">
 																	<fmt:formatNumber type="number" pattern="###,##0.0###" value="${row.quantity}" />
 																</td>
-																<td align="right">${row.getCostPerUnitMaterialAsString()}</td>
-																<td align="right">${row.getTotalCostPerUnitMaterialAsString()}</td>
+																<td align="right">${row.costPerUnitMaterial}</td>
+																<td align="right">${row.totalCostPerUnitMaterial}</td>
 				                                            </tr>
 			                                            	</c:forEach>
 					                                    </tbody>

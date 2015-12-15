@@ -63,7 +63,7 @@
 					                                                <th>Company</th>
 					                                                </sec:authorize>
 					                                                <th>Company Position</th>
-					                                                <th>Salary (Daily)</th>
+					                                                <th>Salary (&#8369; Daily)</th>
 					                                                <th>E-Mail</th>
 					                                                <th>Contact Number</th>
 					                                            </tr>
@@ -112,7 +112,7 @@
 							                                                <td>(${staff.company == null ? "No Company" : staff.company.id}) ${staff.company.name}</td>
 							                                                </sec:authorize>
 							                                                <td>${staff.companyPosition}</td>
-							                                                <td style="text-align: right;">${staff.getWageAsString()}</td>
+							                                                <td style="text-align: right;">${staff.wage}</td>
 							                                                <td>${staff.email}</td>
 							                                                <td>${staff.getContactNumberAsString()}</td>
 							                                            </tr>
@@ -133,7 +133,7 @@
 					                                                <th>Company</th>
 					                                                </sec:authorize>
 					                                                <th>Company Position</th>
-					                                                <th>Salary (Daily)</th>
+					                                                <th>Salary (&#8369; Daily)</th>
 					                                                <th>E-Mail</th>
 					                                                <th>Contact Number</th>
 					                                            </tr>
