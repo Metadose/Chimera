@@ -8,6 +8,8 @@ import com.cebedo.pmsys.model.SystemConfiguration;
 
 public interface SystemConfigurationService {
 
+    public String getCdnUrl();
+
     public String create(SystemConfiguration systemConfiguration, BindingResult result);
 
     public SystemConfiguration getByID(long id);
@@ -27,5 +29,7 @@ public interface SystemConfigurationService {
     public Boolean getBetaServer();
 
     public String getServerHome();
+
+    public Boolean getCdn();
 
 }

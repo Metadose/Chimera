@@ -4,6 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <sec:authentication var="authUser" property="user"/>
+<sec:authentication var="authCdn" property="cdn"/>
+<sec:authentication var="authCdnUrl" property="cdnUrl"/>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -18,15 +20,18 @@
 		<title>${project.name} | Edit Project</title>
     	</c:when>
     </c:choose>
-	
-<%-- 	<link href="<c:url value="/resources/css/ionicons.min.css" />"rel="stylesheet" type="text/css" /> --%>
+    
+<c:if test="${authCdn}">
 	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+	<link href="${authCdnUrl}/resources/css/gantt-custom.css" rel="stylesheet" type="text/css" />
+	<link href="${authCdnUrl}/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" rel="stylesheet" type="text/css" />
+</c:if>
+<c:if test="${!authCdn}">
+	<link href="<c:url value="/resources/css/ionicons/css/ionicons.min.css" />"rel="stylesheet" type="text/css" />
+	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" />
+	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" />
+</c:if>
 	
-<%-- 	<link href="<c:url value="/resources/css/gantt-custom.css" />"rel="stylesheet" type="text/css" /> --%>
-	<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/css/gantt-custom.css" rel="stylesheet" type="text/css" />
-	
-<%-- 	<link href="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" />"rel="stylesheet" type="text/css" /> --%>
-	<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.css" rel="stylesheet" type="text/css" />
 <%-- 	<link href="<c:url value="/resources/lib/fullcalendar.css" />"rel="stylesheet" type="text/css" /> --%>
 	
 	<style type="text/css">
@@ -2414,29 +2419,35 @@
         </aside>
 	</div>
 	
-<%-- 	<script src="<c:url value="/resources/lib/highcharts/js/highcharts.js" />"type="text/javascript"></script> --%>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.9.1/highcharts.js" type="text/javascript"></script>
-
-<%-- 	<script src="<c:url value="/resources/lib/highcharts/js/themes/grid-light.js" />"type="text/javascript"></script> --%>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.9.1/themes/grid-light.js" type="text/javascript"></script>
-
-<%-- 	<script src="<c:url value="/resources/lib/highcharts/js/modules/no-data-to-display.js" />"type="text/javascript"></script> --%>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.9.1/modules/no-data-to-display.js" type="text/javascript"></script>
+	<c:if test="${authCdn}">
+		<script src="https://cdn.datatables.net/plug-ins/1.10.10/api/fnLengthChange.js" type="text/javascript"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.9.1/highcharts.js" type="text/javascript"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.9.1/themes/grid-light.js" type="text/javascript"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.9.1/modules/no-data-to-display.js" type="text/javascript"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.9.1/highcharts-3d.js" type="text/javascript"></script>
+	</c:if>
+	<c:if test="${!authCdn}">
+		<script src="<c:url value="/resources/js/plugins/datatables/fnLengthChange.js" />"type="text/javascript"></script>
+		<script src="<c:url value="/resources/lib/highcharts/js/highcharts.js" />"type="text/javascript"></script>
+		<script src="<c:url value="/resources/lib/highcharts/js/themes/grid-light.js" />"type="text/javascript"></script>
+		<script src="<c:url value="/resources/lib/highcharts/js/modules/no-data-to-display.js" />"type="text/javascript"></script>
+		<script src="<c:url value="/resources/lib/highcharts/js/highcharts-3d.js" />"type="text/javascript"></script>
+	</c:if>
 	
-<%-- 	<script src="<c:url value="/resources/lib/highcharts/js/modules/exporting.js" />"type="text/javascript"></script> --%>
-<%-- 	<script src="<c:url value="/resources/lib/highcharts/js/highcharts-3d.js" />"type="text/javascript"></script> --%>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.9.1/highcharts-3d.js" type="text/javascript"></script>
 	
 	<sec:authorize access="hasAnyRole('ADMIN_COMPANY', 'PROGRAM_OF_WORKS_VIEW')">
 	<c:if test="${project.id != 0 && !empty project.assignedTasks}">
-<%--    	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script> --%>
-	<script src="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" type="text/javascript"></script>
-
-<%--     <script src="${contextPath}/resources/lib/dhtmlxGantt_v3.1.1_gpl/ext/dhtmlxgantt_tooltip.js" type="text/javascript"></script> --%>
-	<script src="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/lib/dhtmlxGantt_v3.1.1_gpl/ext/dhtmlxgantt_tooltip.js" type="text/javascript"></script>
-    
-<%-- 	<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script> --%>
-	<script src="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/js/gantt-custom.js" type="text/javascript"></script>
+	
+	<c:if test="${authCdn}">
+		<script src="${authCdnUrl}/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" type="text/javascript"></script>
+		<script src="${authCdnUrl}/resources/lib/dhtmlxGantt_v3.1.1_gpl/ext/dhtmlxgantt_tooltip.js" type="text/javascript"></script>
+		<script src="${authCdnUrl}/resources/js/gantt-custom.js" type="text/javascript"></script>
+	</c:if>
+	<c:if test="${!authCdn}">
+	   	<script src="<c:url value="/resources/lib/dhtmlxGantt_v3.1.1_gpl/dhtmlxgantt.js" />"type="text/javascript"></script>
+	    <script src="${contextPath}/resources/lib/dhtmlxGantt_v3.1.1_gpl/ext/dhtmlxgantt_tooltip.js" type="text/javascript"></script>
+		<script src="<c:url value="/resources/js/gantt-custom.js" />"type="text/javascript"></script>
+	</c:if>
 	
 	<script type="text/javascript">
 	    $(document).ready(function() {
@@ -3209,7 +3220,6 @@
    	</script>
 	</c:if>
 	
-	<script src="https://cdn.datatables.net/plug-ins/1.10.10/api/fnLengthChange.js" type="text/javascript"></script>
 	<script type="text/javascript">
 	    
 	    // TODO Not sure if we still need the below code.

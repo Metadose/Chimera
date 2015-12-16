@@ -3,14 +3,21 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<sec:authentication var="authCdn" property="cdn"/>
+<sec:authentication var="authCdnUrl" property="cdnUrl"/>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>${material.name} | Edit Material</title>
-<%--    	<link href="<c:url value="/resources/lib/datetimepicker/jquery.datetimepicker.css" />"rel="stylesheet" type="text/css" /> --%>
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.4.3/jquery.datetimepicker.min.css" rel="stylesheet" type="text/css" />
+	
+	<c:if test="${authCdn}">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.4.3/jquery.datetimepicker.min.css" rel="stylesheet" type="text/css" />
+	</c:if>
+	<c:if test="${!authCdn}">
+	   	<link href="<c:url value="/resources/lib/datetimepicker/jquery.datetimepicker.css" />"rel="stylesheet" type="text/css" />
+	</c:if>
 	<style>
 	  ul {         
 	      padding:0 0 0 0;
@@ -198,8 +205,12 @@
         </aside>
 	</div>
 </body>
-<%-- <script src="${contextPath}/resources/lib/datetimepicker/jquery.datetimepicker.js" type="text/javascript"></script> --%>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.4.3/jquery.datetimepicker.min.js" type="text/javascript"></script>
+<c:if test="${authCdn}">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.4.3/jquery.datetimepicker.min.js" type="text/javascript"></script>
+</c:if>
+<c:if test="${!authCdn}">
+	<script src="${contextPath}/resources/lib/datetimepicker/jquery.datetimepicker.js" type="text/javascript"></script>
+</c:if>
 <script>
 function submitForm(id) {
 	$('#'+id).submit();

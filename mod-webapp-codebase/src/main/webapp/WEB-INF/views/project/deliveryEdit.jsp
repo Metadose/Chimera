@@ -3,6 +3,8 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<sec:authentication var="authCdn" property="cdn"/>
+<sec:authentication var="authCdnUrl" property="cdnUrl"/>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -18,8 +20,13 @@
 		<c:set value="${true}" var="isUpdating"/>
    	</c:when>
    	</c:choose>
-<%--    	<link href="<c:url value="/resources/lib/datetimepicker/jquery.datetimepicker.css" />"rel="stylesheet" type="text/css" /> --%>
-   	<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.4.3/jquery.datetimepicker.min.css" rel="stylesheet" type="text/css" />
+   	
+   	<c:if test="${authCdn}">
+	   	<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.4.3/jquery.datetimepicker.min.css" rel="stylesheet" type="text/css" />
+   	</c:if>
+   	<c:if test="${!authCdn}">
+	   	<link href="<c:url value="/resources/lib/datetimepicker/jquery.datetimepicker.css" />"rel="stylesheet" type="text/css" />
+   	</c:if>
 	<style>
 	  ul {         
 	      padding:0 0 0 0;
@@ -325,8 +332,12 @@
         </aside>
 	</div>
 </body>
-<%-- <script src="${contextPath}/resources/lib/datetimepicker/jquery.datetimepicker.js" type="text/javascript"></script> --%>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.4.3/jquery.datetimepicker.min.js" type="text/javascript"></script>
+<c:if test="${authCdn}">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.4.3/jquery.datetimepicker.min.js" type="text/javascript"></script>
+</c:if>
+<c:if test="${!authCdn}">
+	<script src="${contextPath}/resources/lib/datetimepicker/jquery.datetimepicker.js" type="text/javascript"></script>
+</c:if>
 <script>
 $(function () {
 	$('#date-picker').datetimepicker();

@@ -27,6 +27,12 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
     private MessageHelper messageHelper = new MessageHelper();
     private ValidationHelper validationHelper = new ValidationHelper();
 
+    @Value("${webapp.config.cdn.enable}")
+    private Boolean cdn;
+
+    @Value("${webapp.config.cdn.url}")
+    private String cdnUrl;
+
     @Value("${webapp.config.version.beta}")
     private Boolean betaServer;
 
@@ -230,6 +236,24 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
     public void setServerHome(String serverHome) {
 	this.serverHome = serverHome;
+    }
+
+    @Override
+    public Boolean getCdn() {
+	return cdn;
+    }
+
+    public void setCdn(Boolean cdn) {
+	this.cdn = cdn;
+    }
+
+    @Override
+    public String getCdnUrl() {
+	return cdnUrl;
+    }
+
+    public void setCdnUrl(String cdnUrl) {
+	this.cdnUrl = cdnUrl;
     }
 
 }

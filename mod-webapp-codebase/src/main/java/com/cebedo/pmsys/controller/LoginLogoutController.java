@@ -34,6 +34,8 @@ public class LoginLogoutController {
     public static final String MAPPING_CONTROLLER = "auth";
     public static final String JSP_LOGIN = MAPPING_CONTROLLER + "/login";
 
+    public static String cdnUrl = null;
+    public static Boolean cdn = null;
     public static Boolean initWebApp = null;
     public boolean initFields = false;
 
@@ -63,7 +65,7 @@ public class LoginLogoutController {
     public String loginError(Model model) {
 	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT,
 		AlertBoxFactory.FAILED.generateHTML(RegistryResponseMessage.ERROR_AUTH_LOGIN_GENERIC));
-	return getLoginPage();
+	return getLoginPage(model);
     }
 
     @RequestMapping(value = "/logout/company/update", method = RequestMethod.GET)
@@ -71,7 +73,7 @@ public class LoginLogoutController {
 	SecurityContextHolder.getContext().setAuthentication(null);
 	model.addAttribute(ConstantsSystem.UI_PARAM_ALERT, AlertBoxFactory.SUCCESS
 		.generateHTML(RegistryResponseMessage.SUCCESS_AUTH_LOGIN_GENERIC));
-	return getLoginPage();
+	return getLoginPage(model);
     }
 
     /**
@@ -80,9 +82,17 @@ public class LoginLogoutController {
      * @return the name of the JSP page
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String getLoginPage() {
+    public String getLoginPage(Model model) {
 	initWebApp();
 	initFields();
+	if (cdn == null) {
+	    cdn = this.configService.getCdn();
+	}
+	if (cdnUrl == null) {
+	    cdnUrl = this.configService.getCdnUrl();
+	}
+	model.addAttribute("cdn", cdn);
+	model.addAttribute("cdnUrl", cdnUrl);
 	return JSP_LOGIN;
     }
 

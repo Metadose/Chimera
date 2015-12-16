@@ -2,6 +2,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<sec:authentication var="authCdn" property="cdn"/>
+<sec:authentication var="authCdnUrl" property="cdnUrl"/>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -10,14 +12,22 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<c:set value="${false}" var="isUpdating"/>
 	<title>${estimationoutput.name} | View Estimation</title>
-	<link href="<c:url value="/resources/lib/igniteui/infragistics.theme.css" />"rel="stylesheet" type="text/css" />
-	<link href="<c:url value="/resources/lib/igniteui/infragistics.css" />"rel="stylesheet" type="text/css" />
-	<link href="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.css" />"rel="stylesheet" type="text/css" />
+	<c:if test="${authCdn}">
+		<link href="${authCdnUrl}/resources/lib/igniteui/infragistics.theme.css" rel="stylesheet" type="text/css" />
+		<link href="${authCdnUrl}/resources/lib/igniteui/infragistics.css" rel="stylesheet" type="text/css" />
+		<link href="${authCdnUrl}/resources/lib/igniteui/infragistics.ui.treegrid.css" rel="stylesheet" type="text/css" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/accounting.js/0.4.1/accounting.min.js" type="text/javascript"></script>
+		<script src="${authCdnUrl}/resources/js/accounting-aux.js" type="text/javascript"></script>
+	</c:if>
+	<c:if test="${!authCdn}">
+		<link href="<c:url value="/resources/lib/igniteui/infragistics.theme.css" />"rel="stylesheet" type="text/css" />
+		<link href="<c:url value="/resources/lib/igniteui/infragistics.css" />"rel="stylesheet" type="text/css" />
+		<link href="<c:url value="/resources/lib/igniteui/infragistics.ui.treegrid.css" />"rel="stylesheet" type="text/css" />
+		<script src="<c:url value="/resources/js/accounting.min.js" />"type="text/javascript"></script>
+		<script src="<c:url value="/resources/js/accounting-aux.js" />"type="text/javascript"></script>
+	</c:if>
 	
-<%-- 	<script src="<c:url value="/resources/js/accounting.min.js" />"type="text/javascript"></script> --%>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/accounting.js/0.4.1/accounting.min.js" type="text/javascript"></script>
 	
-	<script src="<c:url value="/resources/js/accounting-aux.js" />"type="text/javascript"></script>
 	<style>
 	  ul {         
 	      padding:0 0 0 0;
@@ -216,12 +226,19 @@
         </aside>
 	</div>
 </body>
-<!-- Ignite UI Required Combined JavaScript Files -->
-<%-- <script src="<c:url value="/resources/lib/modernizr.js" />"type="text/javascript"></script> --%>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript"></script>
 
-<script src="<c:url value="/resources/lib/igniteui/infragistics.core.js" />"type="text/javascript"></script>
-<script src="<c:url value="/resources/lib/igniteui/infragistics.lob.js" />"type="text/javascript"></script>
+<c:if test="${authCdn}">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript"></script>
+	<script src="${authCdnUrl}/resources/lib/igniteui/infragistics.core.js" type="text/javascript"></script>
+	<script src="${authCdnUrl}/resources/lib/igniteui/infragistics.lob.js" type="text/javascript"></script>
+</c:if>
+<c:if test="${!authCdn}">
+	<script src="<c:url value="/resources/lib/modernizr.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/lib/igniteui/infragistics.core.js" />"type="text/javascript"></script>
+	<script src="<c:url value="/resources/lib/igniteui/infragistics.lob.js" />"type="text/javascript"></script>
+</c:if>
+
+
 
 <script type="text/javascript">
 
