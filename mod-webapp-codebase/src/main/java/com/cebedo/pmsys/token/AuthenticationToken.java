@@ -27,6 +27,8 @@ public class AuthenticationToken extends AbstractAuthenticationToken {
     private boolean companyAdmin;
     private String ipAddress;
     private String theme;
+    private boolean cdn;
+    private String cdnUrl;
 
     // ~ Constructors
     // ===================================================================================================
@@ -158,5 +160,21 @@ public class AuthenticationToken extends AbstractAuthenticationToken {
 
     public void setTheme(String theme) {
 	this.theme = theme;
+    }
+
+    public boolean isCdn() {
+	return cdn;
+    }
+
+    public void setCdn(boolean cdn) {
+	this.cdn = cdn;
+    }
+
+    public String getCdnUrl() {
+	return cdnUrl;
+    }
+
+    public void setCdnUrl(String cdnUrl) {
+	this.cdnUrl = cdnUrl;
     }
 }

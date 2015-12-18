@@ -1,6 +1,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <sec:authentication var="authTheme" property="theme"/>
+<sec:authentication var="authCdnUrl" property="cdnUrl"/>
 
 <%-- <link href="<c:url value="/resources/lib/bootstrap.min.css" />"rel="stylesheet" type="text/css" /> --%>
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -13,20 +14,20 @@
 
 <%-- <link href="<c:url value="/resources/css/fonts.css" />"rel="stylesheet" type="text/css" /> --%>
 <%-- <link href="<c:url value="/resources/css/cdn-fonts.css" />"rel="stylesheet" type="text/css" /> --%>
-<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/css/cdn-fonts.css" rel="stylesheet" type="text/css" />
+<link href="${authCdnUrl}/resources/css/cdn-fonts.css" rel="stylesheet" type="text/css" />
 
 <%-- <link href="<c:url value="/resources/css/datatables/dataTables.bootstrap.css" />"rel="stylesheet" type="text/css" /> --%>
-<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/css/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="${authCdnUrl}/resources/css/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
 
 <!-- Themes -->
 <%-- <link href="<c:url value="/resources/css/themes/${authTheme}-dist.css" />"rel="stylesheet" type="text/css" /> --%>
-<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/css/themes/${authTheme}-dist.css" rel="stylesheet" type="text/css" />
+<link href="${authCdnUrl}/resources/css/themes/${authTheme}-dist.css" rel="stylesheet" type="text/css" />
 
 <%-- <link href="<c:url value="/resources/css/themes/${authTheme}-buttons.css" />"rel="stylesheet" type="text/css" /> --%>
-<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/css/themes/${authTheme}-buttons.css" rel="stylesheet" type="text/css" />
+<link href="${authCdnUrl}/resources/css/themes/${authTheme}-buttons.css" rel="stylesheet" type="text/css" />
 
 <%-- <link href="<c:url value="/resources/css/cebedo-commons.css" />"rel="stylesheet" type="text/css" /> --%>
-<link href="https://cdn.rawgit.com/VicCebedo/PracticeRepo/development/mod-webapp-codebase/src/main/webapp/resources/css/cebedo-commons.css" rel="stylesheet" type="text/css" />
+<link href="${authCdnUrl}/resources/css/cebedo-commons.css" rel="stylesheet" type="text/css" />
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

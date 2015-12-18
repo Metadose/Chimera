@@ -3,6 +3,7 @@
 <sec:authentication var="authStaff" property="staff"/>
 <sec:authentication var="authUser" property="user"/>
 <sec:authentication var="authCompany" property="company"/>
+<sec:authentication var="authCdn" property="cdn"/>
 <c:set value="${authCompany.name}" var="companyName"></c:set>
 <c:if test="${empty authCompany}">
 	<c:set value="Admin" var="companyName"></c:set>
@@ -23,11 +24,14 @@
 	</c:when>
 </c:choose>
 <!-- header logo: style can be found in header.less -->
-<c:import url="/resources/cdn-js-includes.jsp" />
-<c:import url="/resources/cdn-css-includes.jsp" />
-<%-- <c:import url="/resources/js-includes.jsp" /> --%>
-<%-- <c:import url="/resources/css-includes.jsp" /> --%>
-
+<c:if test="${authCdn}">
+	<c:import url="/resources/cdn-js-includes.jsp" />
+	<c:import url="/resources/cdn-css-includes.jsp" />
+</c:if>
+<c:if test="${!authCdn}">
+	<c:import url="/resources/js-includes.jsp" />
+	<c:import url="/resources/css-includes.jsp" />
+</c:if>
 <style type="text/css">
 #cover {position: fixed; height: 100%; width: 100%; top:0; left: 0; background: #FFFFFF; z-index:10;}
 ul li {     

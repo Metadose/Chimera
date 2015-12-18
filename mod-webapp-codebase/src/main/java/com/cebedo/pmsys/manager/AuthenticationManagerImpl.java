@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import com.cebedo.pmsys.helper.MessageHelper;
 import com.cebedo.pmsys.model.Company;
 import com.cebedo.pmsys.model.Staff;
 import com.cebedo.pmsys.model.SystemUser;
+import com.cebedo.pmsys.service.SystemConfigurationService;
 import com.cebedo.pmsys.service.SystemUserService;
 import com.cebedo.pmsys.token.AuthenticationToken;
 
@@ -33,6 +35,13 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
     private static final int MAX_LOGIN_ATTEMPT = 10;
 
     private SystemUserService systemUserService;
+    private SystemConfigurationService configService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "systemConfigurationService")
+    public void setFieldService(SystemConfigurationService ps) {
+	this.configService = ps;
+    }
 
     @Autowired
     public void setSystemUserService(SystemUserService systemUserService) {
@@ -108,6 +117,8 @@ public class AuthenticationManagerImpl implements AuthenticationManager {
 	AuthenticationToken token = new AuthenticationToken(auth.getName(), credentials,
 		getAuthorities(user), staff, company, user.isSuperAdmin(), user.isCompanyAdmin(), user);
 	token.setIpAddress(ipAddress);
+	token.setCdn(this.configService.getCdn());
+	token.setCdnUrl(this.configService.getCdnUrl());
 	this.messageHelper.loginSuccess(token);
 	return token;
     }
